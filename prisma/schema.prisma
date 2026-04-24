@@ -1,0 +1,32 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model NewsArticle {
+  id          String   @id @default(cuid())
+  title       String
+  summary     String
+  content     String?
+  imageUrl    String?
+  sourceUrl   String
+  sourceName  String   @default("detik.com")
+  category    String   @default("berita")
+  isHeadline  Boolean  @default(false)
+  isBreaking  Boolean  @default(false)
+  publishedAt DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model TrendingTopic {
+  id        String   @id @default(cuid())
+  topic     String
+  count     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
