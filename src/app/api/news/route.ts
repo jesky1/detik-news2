@@ -11,17 +11,18 @@ const categoryQueries: Record<string, string> = {
   internasional: 'berita internasional terbaru',
 };
 
-const VALID_CATEGORIES = Object.keys(categoryQueries);
+const VALID_CATEGORIES = ['all', ...Object.keys(categoryQueries)];
 const CACHE_DURATION_MS = 30 * 60 * 1000; // 30 minutes
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const category = searchParams.get('category') || 'berita';
+    const rawCategory = searchParams.get('category') || 'berita';
+    const category = rawCategory === 'all' ? 'berita' : rawCategory;
 
-    if (!VALID_CATEGORIES.includes(category)) {
+    if (!Object.keys(categoryQueries).includes(category)) {
       return NextResponse.json(
-        { error: `Invalid category. Valid categories: ${VALID_CATEGORIES.join(', ')}` },
+        { error: `Invalid category. Valid categories: ${Object.keys(categoryQueries).join(', ')}` },
         { status: 400 }
       );
     }

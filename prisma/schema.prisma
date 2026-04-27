@@ -7,20 +7,36 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Post {
+  id        String   @id @default(cuid())
+  title     String
+  content   String?
+  published Boolean  @default(false)
+  authorId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model NewsArticle {
   id          String   @id @default(cuid())
   title       String
-  summary     String
-  content     String?
-  imageUrl    String?
+  summary     String?
   sourceUrl   String
-  sourceName  String   @default("detik.com")
-  category    String   @default("berita")
+  sourceName  String
+  imageUrl    String?
+  category    String
   isHeadline  Boolean  @default(false)
   isBreaking  Boolean  @default(false)
   publishedAt DateTime @default(now())
   createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
 }
 
 model TrendingTopic {
@@ -28,5 +44,4 @@ model TrendingTopic {
   topic     String
   count     Int      @default(0)
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
