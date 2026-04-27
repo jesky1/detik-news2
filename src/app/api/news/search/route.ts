@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import ZAI from 'z-ai-web-dev-sdk';
+import { fetchDetikNews, searchDetikNews } from '@/lib/detik-rss';
 
 export async function GET(request: NextRequest) {
   try {
@@ -13,34 +13,32 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const zai = await ZAI.create();
-    const results = await zai.functions.invoke('web_search', {
-      query: q,
-      num: 10,
-      recency_days: 7,
+    // First try searching within detik RSS feeds
+    let articles = await searchDetikNews(q, 10);
+
+    // If no results from search, fetch all categories and combine
+    if (articles.length === 0) {
+      const categories = ['berita', 'ekonomi', 'hiburan', 'olahraga', 'teknologi', 'internasional'];
+      const allArticles = await Promise.all(
+        categories.map((cat) => fetchDetikNews(cat, 5))
+      );
+      const merged = allArticles.flat();
+      // Simple relevance: just return latest from all categories
+      articles = merged.slice(0, 10);
+    }
+
+    return NextResponse.json({
+      articles: articles.map((a, i) => ({
+        id: `search-${i}-${Date.now()}`,
+        title: a.title,
+        summary: a.summary,
+        sourceUrl: a.sourceUrl,
+        sourceName: a.sourceName,
+        imageUrl: a.imageUrl || `https://picsum.photos/seed/${encodeURIComponent(a.title.slice(0, 20))}/800/400`,
+        category: a.category,
+        publishedAt: a.publishedAt,
+      })),
     });
-
-    const articles = results.map((result: {
-      url: string;
-      name: string;
-      snippet: string;
-      host_name: string;
-      date?: string;
-    }) => {
-      const imageUrl = `https://picsum.photos/seed/${encodeURIComponent(result.name.slice(0, 20))}/800/400`;
-
-      return {
-        title: result.name,
-        summary: result.snippet,
-        sourceUrl: result.url,
-        sourceName: result.host_name || 'detik.com',
-        imageUrl,
-        category: 'berita',
-        publishedAt: result.date ? new Date(result.date).toISOString() : new Date().toISOString(),
-      };
-    });
-
-    return NextResponse.json({ articles });
   } catch (error) {
     console.error('[/api/news/search] Error searching news:', error);
     return NextResponse.json({ articles: [] });
