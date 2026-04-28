@@ -11,21 +11,15 @@ import { AdHeaderBanner, AdInArticle, AdFooterBanner } from '@/components/news/A
 export default function Home() {
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-      {/* Iklan Banner Atas - di bawah header */}
       <AdHeaderBanner />
-
       <Header />
       <BreakingTicker />
-
       <main className="flex-1">
         <div className="max-w-7xl mx-auto px-4 py-6">
           <HeroSection />
-
-          {/* Iklan setelah Hero Section */}
           <div className="mt-6">
             <AdInArticle index={0} />
           </div>
-
           <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2">
               <NewsGrid />
@@ -34,17 +28,12 @@ export default function Home() {
               <Sidebar />
             </div>
           </div>
-
-          {/* Iklan di tengah halaman */}
           <div className="mt-8">
             <AdInArticle index={1} />
           </div>
         </div>
       </main>
-
-      {/* Iklan Banner Bawah - di atas footer */}
       <AdFooterBanner />
-
       <Footer />
       <SearchOverlay />
     </div>
