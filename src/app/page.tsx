@@ -12,7 +12,7 @@ function AdSlot({ slot }: { slot: string }) {
   useEffect(() => {
     try {
       ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({});
-    } catch (e) {}
+    } catch (e) { /* ignore */ }
   }, []);
   return (
     <div className="w-full flex justify-center py-3">
@@ -34,11 +34,9 @@ export default function Home() {
         src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6112263998203283"
         crossOrigin="anonymous"
       />
-
       <AdSlot slot="header-banner" />
       <Header />
       <BreakingTicker />
-
       <main className="flex-1">
         <div className="max-w-7xl mx-auto px-4 py-6">
           <HeroSection />
@@ -52,7 +50,6 @@ export default function Home() {
           </div>
         </div>
       </main>
-
       <AdSlot slot="footer-banner" />
       <Footer />
       <SearchOverlay />
