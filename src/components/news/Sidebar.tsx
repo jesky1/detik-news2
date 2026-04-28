@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import type { TrendingTopic, NewsArticle } from './types';
+import { AdBanner } from './AdBanner';
 
 function getTimeAgo(dateString: string): string {
   const now = new Date();
@@ -216,6 +217,14 @@ export function Sidebar() {
           </div>
         </TabsContent>
       </Tabs>
+
+      {/* Iklan Sidebar */}
+      <AdBanner
+        format="rectangle"
+        slot="sidebar-main"
+        className="min-h-[250px]"
+        label="Iklan Sidebar"
+      />
 
       {/* Info Box */}
       <div className="bg-gradient-to-br from-red-50 to-orange-50 rounded-xl p-3.5 border border-red-100">
