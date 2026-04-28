@@ -3,17 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 
-// ============================================
-// GOOGLE SEARCH CONSOLE - VERIFIKASI
-// ============================================
-// Ganti kode di bawah dengan verification code dari Google Search Console
-// Cara mendapatkan:
-//   1. Buka https://search.google.com/search-console/
-//   2. Klik "Tambah Properti" → masukkan URL web kamu
-//   3. Pilih metode "Tag HTML" → copy kode meta tag
-//   4. Ganti XXXXXXXXXX dengan kode yang kamu dapat
-// ============================================
-const GOOGLE_SITE_VERIFICATION = "Iv1JGS76QY_tVkVF1C9e2hXkMb4limM26W3DIfvvGsw";
+// Google Search Console Verification Code
+const GOOGLE_SITE_VERIFICATION = "google82271afd81b42e09.html";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
