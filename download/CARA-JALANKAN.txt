@@ -1,0 +1,104 @@
+============================================================
+  PANDUAN CARA MENJALANKAN DETIKNEWS PORTAL
+  (VERSI RINGAN - TIDAK AKAN MEMBUAT LAPTOP MACET)
+============================================================
+
+PERSYARATAN:
+1. Node.js (versi 18 atau lebih baru)
+   - Download di: https://nodejs.org/
+   - Pilih versi LTS (Long Term Support) dan klik Download
+   - Install seperti biasa (Next > Next > Install)
+   - Setelah install, tutup semua CMD, buka CMD baru, ketik:
+     node --version
+     npm --version
+     (harus keluar angka versinya)
+
+2. Internet aktif (berita diambil dari detik.com)
+
+============================================================
+LANGKAH-LANGKAH:
+============================================================
+
+LANGKAH 1: EKSTRAK FILE ZIP
+- Klik kanan file detik-news-project.zip
+- Pilih "Extract All"
+- Ingat di folder mana kamu extract
+
+LANGKAH 2: BUKA CMD DI FOLDER PROJECT
+- Buka File Explorer
+- Masuk ke folder yang sudah di-extract
+- Klik di address bar paling atas (yang ada tulisan folder path)
+- Ketik "cmd" lalu tekan Enter
+- Akan muncul jendela CMD hitam
+
+LANGKAH 3: COPY FILE ENV
+  Ketik di CMD:
+  copy .env.example .env
+  Lalu tekan Enter
+
+LANGKAH 4: INSTALL DEPENDENCIES
+  Ketik di CMD:
+  npm install
+  Lalu tekan Enter
+  (TUNGGU sampai selesai, bisa 1-3 menit)
+  (Kalau ada warning kuning/hijau, diabaikan saja)
+
+LANGKAH 5: SETUP DATABASE
+  Ketik di CMD (satu per satu):
+  npx prisma generate
+  (tunggu selesai)
+  
+  npx prisma db push
+  (tunggu selesai)
+
+LANGKAH 6: JALANKAN WEB!
+  Ketik di CMD:
+  npm run dev
+  Lalu tekan Enter
+  (tunggu sampai muncul "Ready in ...ms")
+
+LANGKAH 7: BUKA BROWSER
+- Buka Chrome / Edge / Firefox
+- Ketik di address bar: http://localhost:3000
+- Web DetikNews Portal akan terbuka!
+- Berita akan muncul dalam 1-2 detik
+
+============================================================
+KALAU ADA ERROR:
+============================================================
+
+"'npm' is not recognized"
+  -> Node.js belum terinstall
+  -> Download dari https://nodejs.org/, install, restart CMD
+
+"'npx' is not recognized"  
+  -> Sama seperti di atas, install Node.js dulu
+
+"port 3000 is already in use"
+  -> Port 3000 sedang dipakai aplikasi lain
+  -> Jalankan: npx next dev -p 3001
+  -> Buka: http://localhost:3001
+
+"ENOENT: no such file '.env'"
+  -> Lupa copy .env.example
+  -> Jalankan: copy .env.example .env
+
+"Prisma Client not generated"
+  -> Jalankan: npx prisma generate
+
+Berita kosong / tidak muncul:
+  -> Pastikan internet aktif
+  -> Refresh halaman browser
+  -> Buka CMD baru di folder project, jalankan:
+     npm run dev
+  -> Tunggu "Ready" lalu refresh browser
+
+Laptop macet / loading lama:
+  -> TIDAK AKAN TERJADI di versi ini!
+  -> Versi ini sudah dioptimasi:
+     - Cuma 1 request ke detik.com (bukan 30+)
+     - Cache 5 menit (request ulang langsung instant)
+     - Tidak mengambil ringkasan artikel
+  -> Kalau masih lambat, coba matikan VPN/antivirus
+
+============================================================
