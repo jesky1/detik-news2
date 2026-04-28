@@ -1,6 +1,5 @@
-// === Detik.com Web Scraper (RINGAN) ===
-// TIDAK mengambil ringkasan artikel - hanya judul, gambar, dan URL dari halaman list
-// Jauh lebih cepat dan tidak membuat laptop macet
+// === Detik.com Web Scraper ===
+// Scrape artikel berita langsung dari halaman detik.com
 
 export interface DetikArticle {
   title: string;
@@ -27,23 +26,6 @@ const BROWSER_HEADERS: Record<string, string> = {
   'Accept-Language': 'id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7',
 };
 
-// === SIMPLE IN-MEMORY CACHE (5 menit) ===
-const cache = new Map<string, { data: unknown; time: number }>();
-const CACHE_TTL = 5 * 60 * 1000; // 5 menit
-
-function getCached<T>(key: string): T | null {
-  const entry = cache.get(key);
-  if (entry && Date.now() - entry.time < CACHE_TTL) {
-    return entry.data as T;
-  }
-  if (entry) cache.delete(key);
-  return null;
-}
-
-function setCache(key: string, data: unknown): void {
-  cache.set(key, { data, time: Date.now() });
-}
-
 function getSourceName(url: string): string {
   if (url.includes('finance.detik.com')) return 'DetikFinance';
   if (url.includes('hot.detik.com')) return 'DetikHot';
@@ -65,19 +47,19 @@ function cleanTitle(title: string): string {
     .replace(/&rdquo;/g, '"')
     .replace(/&ldquo;/g, '"')
     .replace(/&#39;/g, "'")
-    .replace(/\s+/g, ' ')
     .trim();
 }
 
 /**
- * Parse detik.com HTML - HANYA judul, URL, dan gambar
- * TANPA mengambil ringkasan (ringan & cepat)
+ * Parse detik.com HTML to extract articles
+ * Strategy: extract from onclick attributes (reliable source of title)
  */
 function parseDetikHTML(html: string, category: string): DetikArticle[] {
   const articles: DetikArticle[] = [];
   const seen = new Set<string>();
 
-  // Extract articles from onclick attributes
+  // Extract all (url, title) pairs from onclick='_pt(this, "type", "TITLE", "action")'
+  // The href and title are in the same <a> tag with class="media__link"
   const pattern = /href="(https?:\/\/[^"]+\.detik\.com\/[^"]+)"\s+class="media__link"\s+onclick='_pt\(this,\s*"[^"]*",\s*"([^"]+)",/g;
   let m;
 
@@ -85,6 +67,7 @@ function parseDetikHTML(html: string, category: string): DetikArticle[] {
     const url = m[1];
     const title = cleanTitle(m[2]);
 
+    // Skip non-article links
     if (seen.has(url)) continue;
     if (url.includes('/kolom/kirim') || url.endsWith('/x/')) continue;
     if (title.length < 15 || title === 'menu kanal') continue;
@@ -92,7 +75,7 @@ function parseDetikHTML(html: string, category: string): DetikArticle[] {
     seen.add(url);
     articles.push({
       title,
-      summary: title, // gunakan judul sebagai summary (ringan!)
+      summary: '',
       sourceUrl: url,
       sourceName: getSourceName(url),
       imageUrl: '',
@@ -101,7 +84,7 @@ function parseDetikHTML(html: string, category: string): DetikArticle[] {
     });
   }
 
-  // Extract images - match by proximity to article
+  // Extract images: find all awsimages.detik.net.id URLs
   const imgPattern = /src="(https:\/\/awsimages\.detik\.net\.id\/[^"]+\?\w=\d+[^"]*)"[^>]*\s+alt="([^"]+)"[^>]*\s+title="([^"]+)"/g;
   const imageMap: Record<string, string> = {};
   while ((m = imgPattern.exec(html)) !== null) {
@@ -123,45 +106,88 @@ function parseDetikHTML(html: string, category: string): DetikArticle[] {
 }
 
 /**
- * Scrape a detik.com page - 1 request saja, timeout 8 detik
+ * Scrape a detik.com page for articles
  */
 async function scrapeDetikPage(url: string, category: string): Promise<DetikArticle[]> {
-  const cacheKey = `page:${url}`;
-  const cached = getCached<DetikArticle[]>(cacheKey);
-  if (cached) return cached;
-
   try {
     const res = await fetch(url, {
       headers: BROWSER_HEADERS,
-      signal: AbortSignal.timeout(8000), // 8 detik timeout
+      signal: AbortSignal.timeout(15000),
     });
 
-    if (!res.ok) return [];
+    if (!res.ok) {
+      console.error(`[detik-scraper] Failed to fetch ${url}: ${res.status}`);
+      return [];
+    }
 
     const html = await res.text();
-    const articles = parseDetikHTML(html, category);
-    setCache(cacheKey, articles);
-    return articles;
+    return parseDetikHTML(html, category);
   } catch (error) {
     console.error(`[detik-scraper] Error scraping ${url}:`, error);
     return [];
   }
 }
 
+/**
+ * Fetch article summary from detik.com article page
+ */
+async function fetchArticleSummary(articleUrl: string): Promise<string> {
+  try {
+    const res = await fetch(articleUrl, {
+      headers: BROWSER_HEADERS,
+      signal: AbortSignal.timeout(10000),
+    });
+
+    if (!res.ok) return '';
+
+    const html = await res.text();
+
+    // Find the detail__text content area
+    const textSection = html.match(/class="detail__body"[^>]*>([\s\S]*?)class="detail__footer/);
+    if (textSection) {
+      const text = textSection[1]
+        .replace(/<strong[^>]*>[^<]*<\/strong>/g, '')
+        .replace(/<iframe[^>]*>[\s\S]*?<\/iframe>/g, '')
+        .replace(/<script[^>]*>[\s\S]*?<\/script>/g, '')
+        .replace(/<[^>]+>/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+      if (text.length > 30) return text.slice(0, 300);
+    }
+
+    // Fallback: find <p> tags with substantial content
+    const pPattern = /<p[^>]*class="[^"]*"/g; // skip, too specific
+    // Just get any <p> content
+    const simpleP = />([^<]{40,})</g;
+    const paragraphs: string[] = [];
+    let pm;
+    while ((pm = simpleP.exec(html)) !== null) {
+      const text = pm[1].trim();
+      if (text.length > 40 && !text.includes('function') && !text.includes('var ') && !text.includes('{')) {
+        paragraphs.push(text);
+        if (paragraphs.length >= 3) break;
+      }
+    }
+    if (paragraphs.length > 0) {
+      return paragraphs.join(' ').slice(0, 300);
+    }
+
+    return '';
+  } catch {
+    return '';
+  }
+}
+
 // === Public API ===
 
 /**
- * Fetch articles dari detik.com - RINGAN, hanya 1 request
+ * Fetch articles from detik.com for a specific category
  */
 export async function fetchDetikNews(category: string, limit: number = 12): Promise<DetikArticle[]> {
-  const cacheKey = `news:${category}:${limit}`;
-  const cached = getCached<DetikArticle[]>(cacheKey);
-  if (cached) return cached;
-
   const url = DETIK_CATEGORY_URLS[category] || DETIK_CATEGORY_URLS.berita;
   let articles = await scrapeDetikPage(url, category);
 
-  // Jika kurang dari 5, coba halaman utama
+  // If not enough, try main category page
   if (articles.length < 5) {
     const mainUrls: Record<string, string> = {
       berita: 'https://news.detik.com/',
@@ -181,67 +207,68 @@ export async function fetchDetikNews(category: string, limit: number = 12): Prom
     }
   }
 
-  const result = articles.slice(0, limit);
-  setCache(cacheKey, result);
-  return result;
+  // Fetch summaries for top 5
+  const top5 = articles.slice(0, 5);
+  const summaries = await Promise.allSettled(top5.map(a => fetchArticleSummary(a.sourceUrl)));
+  for (let i = 0; i < top5.length; i++) {
+    if (summaries[i].status === 'fulfilled') top5[i].summary = summaries[i].value;
+  }
+
+  return articles.slice(0, limit);
 }
 
 /**
- * Fetch headlines - RINGAN, hanya 1-2 request
+ * Fetch headline articles from detik.com
  */
 export async function fetchDetikHeadlines(limit: number = 8): Promise<{ headlines: DetikArticle[]; breaking: DetikArticle[] }> {
-  const cacheKey = `headlines:${limit}`;
-  const cached = getCached<{ headlines: DetikArticle[]; breaking: DetikArticle[] }>(cacheKey);
-  if (cached) return cached;
+  const [newsArticles, hotArticles] = await Promise.all([
+    scrapeDetikPage('https://www.detik.com/terpopuler/news', 'berita'),
+    scrapeDetikPage('https://www.detik.com/terpopuler/hot', 'hiburan'),
+  ]);
 
-  // Hanya 1 request ke detik.com
-  const newsArticles = await scrapeDetikPage('https://www.detik.com/terpopuler/news', 'berita');
-
-  // Deduplicate
   const seen = new Set<string>();
   const allArticles: DetikArticle[] = [];
-  for (const a of newsArticles) {
+  for (const a of [...newsArticles, ...hotArticles]) {
     if (!seen.has(a.sourceUrl)) { seen.add(a.sourceUrl); allArticles.push(a); }
   }
 
-  const result = {
+  // Fetch summaries for top 5
+  const top5 = allArticles.slice(0, 5);
+  const summaries = await Promise.allSettled(top5.map(a => fetchArticleSummary(a.sourceUrl)));
+  for (let i = 0; i < top5.length; i++) {
+    if (summaries[i].status === 'fulfilled') top5[i].summary = summaries[i].value;
+  }
+
+  return {
     headlines: allArticles.slice(0, limit),
     breaking: allArticles.slice(limit, limit + 5),
   };
-  setCache(cacheKey, result);
-  return result;
 }
 
 /**
- * Fetch trending topics - RINGAN, 1 request
+ * Fetch trending topics from detik.com
  */
 export async function fetchDetikTrending(limit: number = 10): Promise<{ topic: string; sourceUrl: string; count: number }[]> {
-  const cacheKey = `trending:${limit}`;
-  const cached = getCached<{ topic: string; sourceUrl: string; count: number }[]>(cacheKey);
-  if (cached) return cached;
-
   const articles = await scrapeDetikPage('https://www.detik.com/terpopuler/news', 'berita');
-  const result = articles.slice(0, limit).map((a, i) => ({
+  return articles.slice(0, limit).map((a, i) => ({
     topic: a.title,
     sourceUrl: a.sourceUrl,
     count: limit - i,
   }));
-  setCache(cacheKey, result);
-  return result;
 }
 
 /**
- * Search articles - RINGAN, 1 request
+ * Search articles from detik.com
  */
 export async function searchDetikNews(query: string, limit: number = 10): Promise<DetikArticle[]> {
-  const cacheKey = `search:${query}:${limit}`;
-  const cached = getCached<DetikArticle[]>(cacheKey);
-  if (cached) return cached;
-
   const searchUrl = `https://www.detik.com/search/searchall?query=${encodeURIComponent(query)}&sortby=time&sorttime=0`;
   const articles = await scrapeDetikPage(searchUrl, 'berita');
 
-  const result = articles.slice(0, limit);
-  setCache(cacheKey, result);
-  return result;
+  const top3 = articles.slice(0, 3);
+  const summaries = await Promise.allSettled(top3.map(a => fetchArticleSummary(a.sourceUrl)));
+  for (let i = 0; i < top3.length; i++) {
+    if (summaries[i].status === 'fulfilled') top3[i].summary = summaries[i].value;
+  }
+
+  return articles.slice(0, limit);
 }

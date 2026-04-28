@@ -1,24 +1,25 @@
-import type { MetadataRoute } from 'next';
-
-const SITE_URL = 'https://detik-news2.vercel.app';
+import type { MetadataRoute } from "next";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const now = new Date();
+  const baseUrl = "https://detik-news2.vercel.app";
 
-  const staticPages = [
+  const staticPages: MetadataRoute.Sitemap = [
     {
-      url: SITE_URL,
-      lastModified: now,
-      changeFrequency: 'always' as const,
-      priority: 1.0,
+      url: baseUrl,
+      lastModified: new Date(),
+      changeFrequency: "always",
+      priority: 1,
     },
   ];
 
-  const categories = ['berita', 'ekonomi', 'hiburan', 'olahraga', 'teknologi', 'internasional'];
-  const categoryPages = categories.map((cat) => ({
-    url: `${SITE_URL}?category=${cat}`,
-    lastModified: now,
-    changeFrequency: 'always' as const,
+  const categories = [
+    "berita", "ekonomi", "hiburan", "olahraga", "teknologi", "internasional",
+  ];
+
+  const categoryPages: MetadataRoute.Sitemap = categories.map((category) => ({
+    url: `${baseUrl}?category=${category}`,
+    lastModified: new Date(),
+    changeFrequency: "always" as const,
     priority: 0.8,
   }));
 

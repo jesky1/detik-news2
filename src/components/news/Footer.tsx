@@ -1,6 +1,6 @@
 'use client';
 
-import { Facebook, Twitter, Instagram, Youtube, MessageCircle, Send } from 'lucide-react';
+import { Facebook, Twitter, Instagram, Youtube, ChevronUp } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { useNewsStore } from '@/lib/news-store';
 
@@ -33,42 +33,35 @@ const footerCategories = [
 ];
 
 const socialLinks = [
-  { icon: Facebook, label: 'Facebook', href: 'https://facebook.com/bang.nikko.96' },
-  { icon: Twitter, label: 'Twitter', href: 'https://twitter.com/jesky707' },
-  { icon: Instagram, label: 'Instagram', href: 'https://instagram.com/myrisca_real' },
-  { icon: Youtube, label: 'YouTube', href: 'https://youtube.com/@putrichikal4912' },
-  { icon: MessageCircle, label: 'WhatsApp', href: 'https://wa.me/6281234567890' },
-  { icon: Send, label: 'Telegram', href: 'https://t.me/mytania1' },
+  { icon: Facebook, label: 'Facebook', href: '#' },
+  { icon: Twitter, label: 'Twitter', href: '#' },
+  { icon: Instagram, label: 'Instagram', href: '#' },
+  { icon: Youtube, label: 'YouTube', href: '#' },
 ];
 
 export function Footer() {
   const { setActiveCategory, setSearchQuery, setSearchOpen } = useNewsStore();
 
   const handleCategoryClick = (category: string) => {
-    setActiveCategory(category);
+    // Reset search, set category, then scroll to grid
     setSearchQuery('');
     setSearchOpen(false);
-    // Scroll ke news grid
-    const newsSection = document.getElementById('news-grid-section');
-    if (newsSection) {
-      newsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-    // Scroll ke atas halaman
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setActiveCategory(category);
+    setTimeout(() => {
+      const el = document.getElementById('news-grid-section');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
   };
 
   const handleSubcategoryClick = (subcategory: string, parentCategory: string) => {
+    // Set category + search query, then scroll to grid
+    setSearchOpen(false);
     setActiveCategory(parentCategory);
     setSearchQuery(subcategory);
-    setSearchOpen(false);
-    // Scroll ke atas halaman lalu ke news grid
-    window.scrollTo({ top: 0, behavior: 'smooth' });
     setTimeout(() => {
-      const newsSection = document.getElementById('news-grid-section');
-      if (newsSection) {
-        newsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    }, 300);
+      const el = document.getElementById('news-grid-section');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
   };
 
   return (
@@ -78,8 +71,8 @@ export function Footer() {
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6 mb-8">
           <div>
             <h2 className="text-2xl font-extrabold mb-2">
-              <span className="text-white">WARGA</span>
-              <span className="text-[#e00000]">KONOHA</span>
+              <span className="text-white">DETIK</span>
+              <span className="text-[#e00000]">NEWS</span>
             </h2>
             <p className="text-gray-400 text-sm max-w-md leading-relaxed">
               Portal berita terkini dan terpercaya dari Indonesia. Menyajikan informasi
@@ -108,7 +101,7 @@ export function Footer() {
             <div key={category.title}>
               <button
                 onClick={() => handleCategoryClick(category.category)}
-                className="text-white font-semibold text-sm mb-3 hover:text-[#e00000] transition-colors cursor-pointer"
+                className="text-white font-semibold text-sm mb-3 hover:text-[#e00000] transition-colors cursor-pointer w-full text-left"
               >
                 {category.title}
               </button>
@@ -132,13 +125,13 @@ export function Footer() {
 
         {/* Bottom Section */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-500">
-          <p>&copy; 2025 Warga Konoha. All rights reserved.</p>
+          <p>&copy; 2025 DetikNews. All rights reserved.</p>
           <div className="flex items-center gap-4">
-            <a href="/tentang.html">Tentang Kami</a>
-            <a href="/redaksi.html">Redaksi</a>
-            <a href="/karir.html">Karir</a>
-            <a href="/kontak.html">Kontak</a>
-            <a href="/privasi.html">Privasi</a>
+            <a href="#" className="hover:text-white transition-colors">Tentang Kami</a>
+            <a href="#" className="hover:text-white transition-colors">Redaksi</a>
+            <a href="#" className="hover:text-white transition-colors">Karir</a>
+            <a href="#" className="hover:text-white transition-colors">Kontak</a>
+            <a href="#" className="hover:text-white transition-colors">Privasi</a>
           </div>
         </div>
       </div>

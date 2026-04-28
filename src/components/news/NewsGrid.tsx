@@ -24,10 +24,12 @@ function getTimeAgo(dateString: string): string {
 }
 
 export function NewsGrid() {
-  const { activeCategory, searchQuery, setSearchQuery, setActiveCategory } = useNewsStore();
+  const { activeCategory, searchQuery, setSearchQuery } = useNewsStore();
   const [articles, setArticles] = useState<NewsArticle[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
+
+  const isSearchMode = searchQuery && searchQuery.trim().length > 0;
 
   const fetchNews = useCallback(async (category: string, showLoader = true) => {
     if (showLoader) setLoading(true);
@@ -40,67 +42,42 @@ export function NewsGrid() {
         throw new Error('Failed to fetch');
       }
     } catch {
-      // Fallback sample data
       setArticles([
         {
-          id: 'fb1',
-          title: 'Pemerintah Luncurkan Program Digital Nasional untuk Percepat Transformasi Ekonomi',
-          summary: 'Program ini bertujuan mempercepat adopsi teknologi digital di seluruh sektor ekonomi Indonesia, termasuk UMKM dan pendidikan.',
-          imageUrl: 'https://picsum.photos/seed/fallback1/800/400',
-          sourceUrl: '#',
-          sourceName: 'DetikNews',
-          category: 'berita',
-          publishedAt: new Date(Date.now() - 3600000).toISOString(),
+          id: 'fb1', title: 'Pemerintah Luncurkan Program Digital Nasional untuk Percepat Transformasi Ekonomi',
+          summary: 'Program ini bertujuan mempercepat adopsi teknologi digital di seluruh sektor ekonomi Indonesia.',
+          imageUrl: 'https://picsum.photos/seed/fallback1/800/400', sourceUrl: '#', sourceName: 'DetikNews',
+          category: 'berita', publishedAt: new Date(Date.now() - 3600000).toISOString(),
         },
         {
-          id: 'fb2',
-          title: 'Bank Indonesia Pertahankan Suku Bunga di Tengah Ketidakpastian Global',
-          summary: 'BI memutuskan untuk mempertahankan suku bunga acuan di level 5,75% untuk menjaga stabilitas ekonomi.',
-          imageUrl: 'https://picsum.photos/seed/fallback2/800/400',
-          sourceUrl: '#',
-          sourceName: 'DetikFinance',
-          category: 'ekonomi',
-          publishedAt: new Date(Date.now() - 7200000).toISOString(),
+          id: 'fb2', title: 'Bank Indonesia Pertahankan Suku Bunga di Tengah Ketidakpastian Global',
+          summary: 'BI memutuskan untuk mempertahankan suku bunga acuan di level 5,75%.',
+          imageUrl: 'https://picsum.photos/seed/fallback2/800/400', sourceUrl: '#', sourceName: 'DetikFinance',
+          category: 'ekonomi', publishedAt: new Date(Date.now() - 7200000).toISOString(),
         },
         {
-          id: 'fb3',
-          title: 'Timnas Indonesia Lolos ke Babak Semifinal Piala Asia 2025',
+          id: 'fb3', title: 'Timnas Indonesia Lolos ke Babak Semifinal Piala Asia 2025',
           summary: 'Pencapaian bersejarah bagi sepak bola Indonesia di kancah internasional.',
-          imageUrl: 'https://picsum.photos/seed/fallback3/800/400',
-          sourceUrl: '#',
-          sourceName: 'DetikSport',
-          category: 'olahraga',
-          publishedAt: new Date(Date.now() - 10800000).toISOString(),
+          imageUrl: 'https://picsum.photos/seed/fallback3/800/400', sourceUrl: '#', sourceName: 'DetikSport',
+          category: 'olahraga', publishedAt: new Date(Date.now() - 10800000).toISOString(),
         },
         {
-          id: 'fb4',
-          title: 'Startup AI Asal Bandung Raih Penghargaan di Silicon Valley',
+          id: 'fb4', title: 'Startup AI Asal Bandung Raih Penghargaan di Silicon Valley',
           summary: 'Nusantara AI berhasil memenangkan kompetisi inovasi teknologi tingkat internasional.',
-          imageUrl: 'https://picsum.photos/seed/fallback4/800/400',
-          sourceUrl: '#',
-          sourceName: 'DetikInet',
-          category: 'teknologi',
-          publishedAt: new Date(Date.now() - 14400000).toISOString(),
+          imageUrl: 'https://picsum.photos/seed/fallback4/800/400', sourceUrl: '#', sourceName: 'DetikInet',
+          category: 'teknologi', publishedAt: new Date(Date.now() - 14400000).toISOString(),
         },
         {
-          id: 'fb5',
-          title: 'Film Indonesia Masuk Nominasi Festival Film Cannes 2025',
-          summary: 'Film karya sutradara muda Indonesia berhasil menarik perhatian dunia perfilman internasional.',
-          imageUrl: 'https://picsum.photos/seed/fallback5/800/400',
-          sourceUrl: '#',
-          sourceName: 'DetikHot',
-          category: 'hiburan',
-          publishedAt: new Date(Date.now() - 18000000).toISOString(),
+          id: 'fb5', title: 'Film Indonesia Masuk Nominasi Festival Film Cannes 2025',
+          summary: 'Film karya sutradara muda Indonesia berhasil menarik perhatian dunia perfilman.',
+          imageUrl: 'https://picsum.photos/seed/fallback5/800/400', sourceUrl: '#', sourceName: 'DetikHot',
+          category: 'hiburan', publishedAt: new Date(Date.now() - 18000000).toISOString(),
         },
         {
-          id: 'fb6',
-          title: 'KTT G20 Bahas Krisis Iklim dan Transformasi Energi Global',
-          summary: 'Para pemimpin dunia sepakat untuk mempercepat transisi menuju energi bersih dan berkelanjutan.',
-          imageUrl: 'https://picsum.photos/seed/fallback6/800/400',
-          sourceUrl: '#',
-          sourceName: 'DetikNews',
-          category: 'internasional',
-          publishedAt: new Date(Date.now() - 21600000).toISOString(),
+          id: 'fb6', title: 'KTT G20 Bahas Krisis Iklim dan Transformasi Energi Global',
+          summary: 'Para pemimpin dunia sepakat untuk mempercepat transisi menuju energi bersih.',
+          imageUrl: 'https://picsum.photos/seed/fallback6/800/400', sourceUrl: '#', sourceName: 'DetikNews',
+          category: 'internasional', publishedAt: new Date(Date.now() - 21600000).toISOString(),
         },
       ]);
     } finally {
@@ -126,17 +103,17 @@ export function NewsGrid() {
     }
   }, []);
 
-  // Fetch data based on searchQuery or activeCategory
+  // Fetch data: jika ada searchQuery pakai search, kalau tidak pakai category
   useEffect(() => {
-    if (searchQuery && searchQuery.trim().length > 0) {
+    if (isSearchMode) {
       fetchSearch(searchQuery);
     } else {
       fetchNews(activeCategory);
     }
-  }, [activeCategory, searchQuery, fetchNews, fetchSearch]);
+  }, [activeCategory, searchQuery, isSearchMode, fetchNews, fetchSearch]);
 
   const handleRefresh = () => {
-    if (searchQuery && searchQuery.trim().length > 0) {
+    if (isSearchMode) {
       fetchSearch(searchQuery, false);
     } else {
       fetchNews(activeCategory, false);
@@ -147,14 +124,10 @@ export function NewsGrid() {
     setSearchQuery('');
   };
 
-  const isSearchMode = searchQuery && searchQuery.trim().length > 0;
+  // Judul section
   const sectionTitle = isSearchMode
     ? `Hasil pencarian: "${searchQuery}"`
     : (categoryLabels[activeCategory] || 'Berita Terkini');
-
-  const sectionSubtitle = isSearchMode
-    ? `${articles.length} artikel ditemukan`
-    : 'Berita terbaru untuk Anda';
 
   if (loading) {
     return (
@@ -196,7 +169,7 @@ export function NewsGrid() {
               </button>
             )}
           </div>
-          <p className="text-sm text-gray-500 mt-1">{sectionSubtitle}</p>
+          <p className="text-sm text-gray-500 mt-1">Berita terbaru untuk Anda</p>
         </div>
         <div className="bg-white rounded-xl p-8 text-center shadow-sm border border-gray-100">
           <div className="text-gray-400 mb-3">
@@ -210,9 +183,17 @@ export function NewsGrid() {
           <p className="text-gray-400 text-sm mt-1">
             {isSearchMode ? 'Coba gunakan kata kunci yang berbeda' : 'Belum ada artikel untuk kategori ini'}
           </p>
+          {isSearchMode && (
+            <button
+              onClick={handleClearSearch}
+              className="mt-4 text-[#e00000] hover:text-red-700 text-sm font-medium transition-colors"
+            >
+              Kembali ke berita utama
+            </button>
+          )}
           <button
             onClick={handleRefresh}
-            className="mt-4 text-[#e00000] hover:text-red-700 text-sm font-medium transition-colors"
+            className="mt-4 text-[#e00000] hover:text-red-700 text-sm font-medium transition-colors block mx-auto"
           >
             Coba lagi
           </button>
@@ -231,7 +212,7 @@ export function NewsGrid() {
             {isSearchMode && (
               <button
                 onClick={handleClearSearch}
-                className="flex items-center gap-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-[#e00000] px-2 py-1 rounded-full transition-colors"
+                className="flex items-center gap-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-[#e00000] px-2.5 py-1 rounded-full transition-colors"
               >
                 <X className="w-3 h-3" />
                 Hapus filter
@@ -239,10 +220,7 @@ export function NewsGrid() {
             )}
           </div>
           <p className="text-sm text-gray-500 mt-1">
-            {isSearchMode
-              ? `${articles.length} artikel ditemukan`
-              : `${articles.length} artikel ditemukan`
-            }
+            {articles.length} artikel ditemukan
           </p>
         </div>
         <button
@@ -289,12 +267,17 @@ export function NewsGrid() {
 
             {/* Content */}
             <div className="p-4 flex flex-col flex-1">
-              <h3 className="font-bold text-gray-900 text-[13px] leading-snug group-hover:text-[#e00000] transition-colors line-clamp-2 mb-1.5 break-words">
+              <h3 className="font-bold text-gray-900 text-sm leading-snug group-hover:text-[#e00000] transition-colors line-clamp-2 mb-2">
                 {article.title}
               </h3>
-              <div className="flex items-center justify-between text-[11px] text-gray-400 pt-1.5 border-t border-gray-50">
-                <span className="font-medium text-gray-500 truncate mr-2">{article.sourceName}</span>
-                <div className="flex items-center gap-2 flex-shrink-0">
+              <p className="text-gray-500 text-xs leading-relaxed line-clamp-2 mb-3 flex-1">
+                {article.summary}
+              </p>
+              <div className="flex items-center justify-between text-xs text-gray-400 pt-2 border-t border-gray-50">
+                <div className="flex items-center gap-1">
+                  <span className="font-medium text-gray-600">{article.sourceName}</span>
+                </div>
+                <div className="flex items-center gap-3">
                   <span className="flex items-center gap-1">
                     <Clock className="w-3 h-3" />
                     {getTimeAgo(article.publishedAt)}

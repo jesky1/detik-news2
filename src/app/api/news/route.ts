@@ -16,14 +16,14 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // 1 request saja ke detik.com (sudah ada cache)
+    // Fetch real articles from detik.com RSS
     const articles = await fetchDetikNews(category, 12);
 
     return NextResponse.json({
       articles: articles.map((a, i) => ({
         id: `detik-${category}-${i}-${Date.now()}`,
         title: a.title,
-        summary: a.summary || a.title,
+        summary: a.summary,
         sourceUrl: a.sourceUrl,
         sourceName: a.sourceName,
         imageUrl: a.imageUrl || `https://picsum.photos/seed/${encodeURIComponent(a.title.slice(0, 20))}/800/400`,

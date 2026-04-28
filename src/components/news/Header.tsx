@@ -63,8 +63,8 @@ export function Header() {
         {/* Logo */}
         <a href="/" className="flex-shrink-0">
           <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight">
-            <span className="text-white">WARGA</span>
-            <span className="text-[#e00000]">KONOHA</span>
+            <span className="text-white">DETIK</span>
+            <span className="text-[#e00000]">NEWS</span>
           </h1>
         </a>
 
@@ -104,8 +104,8 @@ export function Header() {
             <SheetContent side="left" className="bg-[#0c0c0c] border-white/10 w-72">
               <SheetHeader>
                 <SheetTitle className="text-left">
-                  <span className="text-white font-extrabold">WARGA</span>
-                  <span className="text-[#e00000] font-extrabold">KONOHA</span>
+                  <span className="text-white font-extrabold">DETIK</span>
+                  <span className="text-[#e00000] font-extrabold">NEWS</span>
                 </SheetTitle>
               </SheetHeader>
               <nav className="flex flex-col gap-1 mt-4">

@@ -1,104 +1,79 @@
 ============================================================
   PANDUAN CARA MENJALANKAN DETIKNEWS PORTAL
-  (VERSI RINGAN - TIDAK AKAN MEMBUAT LAPTOP MACET)
 ============================================================
 
 PERSYARATAN:
 1. Node.js (versi 18 atau lebih baru)
    - Download di: https://nodejs.org/
-   - Pilih versi LTS (Long Term Support) dan klik Download
-   - Install seperti biasa (Next > Next > Install)
-   - Setelah install, tutup semua CMD, buka CMD baru, ketik:
+   - Pilih versi LTS (Long Term Support)
+   - Setelah install, cek di CMD/PowerShell:
      node --version
      npm --version
-     (harus keluar angka versinya)
 
-2. Internet aktif (berita diambil dari detik.com)
+2. Pastikan komputer terhubung internet
+   (karena berita diambil langsung dari detik.com)
 
 ============================================================
 LANGKAH-LANGKAH:
 ============================================================
 
-LANGKAH 1: EKSTRAK FILE ZIP
-- Klik kanan file detik-news-project.zip
-- Pilih "Extract All"
-- Ingat di folder mana kamu extract
+1. EKSTRAK FILE ZIP
+   - Klik kanan file detik-news-project.zip
+   - Pilih "Extract All" atau "Extract Here"
+   - Atau gunakan aplikasi WinRAR/7-Zip
 
-LANGKAH 2: BUKA CMD DI FOLDER PROJECT
-- Buka File Explorer
-- Masuk ke folder yang sudah di-extract
-- Klik di address bar paling atas (yang ada tulisan folder path)
-- Ketik "cmd" lalu tekan Enter
-- Akan muncul jendela CMD hitam
+2. BUKA CMD / TERMINAL DI FOLDER PROJECT
+   - Buka File Explorer, masuk ke folder yang sudah di-extract
+   - Klik di address bar, ketik "cmd", lalu tekan Enter
+   - Contoh: C:\Users\Nama\Downloads\detik-news-project> 
 
-LANGKAH 3: COPY FILE ENV
-  Ketik di CMD:
-  copy .env.example .env
-  Lalu tekan Enter
+3. COPY FILE .ENV
+   copy .env.example .env
 
-LANGKAH 4: INSTALL DEPENDENCIES
-  Ketik di CMD:
-  npm install
-  Lalu tekan Enter
-  (TUNGGU sampai selesai, bisa 1-3 menit)
-  (Kalau ada warning kuning/hijau, diabaikan saja)
+4. INSTALL DEPENDENCIES
+   npm install
+   (tunggu sampai selesai, bisa 1-3 menit)
 
-LANGKAH 5: SETUP DATABASE
-  Ketik di CMD (satu per satu):
-  npx prisma generate
-  (tunggu selesai)
-  
-  npx prisma db push
-  (tunggu selesai)
+5. SETUP DATABASE
+   npx prisma generate
+   npx prisma db push
 
-LANGKAH 6: JALANKAN WEB!
-  Ketik di CMD:
-  npm run dev
-  Lalu tekan Enter
-  (tunggu sampai muncul "Ready in ...ms")
+6. JALANKAN SERVER
+   npm run dev
 
-LANGKAH 7: BUKA BROWSER
-- Buka Chrome / Edge / Firefox
-- Ketik di address bar: http://localhost:3000
-- Web DetikNews Portal akan terbuka!
-- Berita akan muncul dalam 1-2 detik
+7. BUKA BROWSER
+   - Buka Chrome/Edge/Firefox
+   - Ketik di address bar: http://localhost:3000
+   - Web DetikNews Portal akan terbuka!
 
 ============================================================
 KALAU ADA ERROR:
 ============================================================
 
-"'npm' is not recognized"
-  -> Node.js belum terinstall
-  -> Download dari https://nodejs.org/, install, restart CMD
+Error: "'npm' is not recognized"
+  -> Node.js belum terinstall. Download dan install dari nodejs.org
 
-"'npx' is not recognized"  
-  -> Sama seperti di atas, install Node.js dulu
+Error: "'npx' is not recognized"
+  -> Node.js belum terinstall. Download dan install dari nodejs.org
 
-"port 3000 is already in use"
-  -> Port 3000 sedang dipakai aplikasi lain
-  -> Jalankan: npx next dev -p 3001
-  -> Buka: http://localhost:3001
+Error: "port 3000 is already in use"
+  -> Port 3000 sedang dipakai. Tutup aplikasi lain atau:
+     npx next dev -p 3001
+     lalu buka http://localhost:3001
 
-"ENOENT: no such file '.env'"
-  -> Lupa copy .env.example
-  -> Jalankan: copy .env.example .env
-
-"Prisma Client not generated"
+Error: "Prisma Client not generated"
   -> Jalankan: npx prisma generate
 
-Berita kosong / tidak muncul:
-  -> Pastikan internet aktif
-  -> Refresh halaman browser
-  -> Buka CMD baru di folder project, jalankan:
-     npm run dev
-  -> Tunggu "Ready" lalu refresh browser
-
-Laptop macet / loading lama:
-  -> TIDAK AKAN TERJADI di versi ini!
-  -> Versi ini sudah dioptimasi:
-     - Cuma 1 request ke detik.com (bukan 30+)
-     - Cache 5 menit (request ulang langsung instant)
-     - Tidak mengambil ringkasan artikel
-  -> Kalau masih lambat, coba matikan VPN/antivirus
+Error: Berita kosong / tidak muncul
+  -> Pastikan komputer terhubung internet
+  -> Coba refresh halaman
+  -> detik.com mungkin sedang down
 
 ============================================================
+CATATAN:
+============================================================
+- Berita diambil secara REAL-TIME dari detik.com
+- Web ini berfungsi sebagai portal berita yang meng-scrape
+  artikel dari berbagai kanal detik.com
+- Data tidak disimpan di database (langsung dari detik.com)
+- Pastikan internet aktif saat menggunakan web ini

@@ -1,17 +1,16 @@
-import type { MetadataRoute } from 'next';
-
-const SITE_URL = 'https://detik-news2.vercel.app';
+import type { MetadataRoute } from "next";
 
 export default function robots(): MetadataRoute.Robots {
+  const baseUrl = "https://detik-news2.vercel.app";
+
   return {
     rules: [
       {
-        userAgent: '*',
-        allow: '/',
-        disallow: ['/api/'],
+        userAgent: "*",
+        allow: "/",
+        disallow: ["/api/"],
       },
     ],
-    sitemap: `${SITE_URL}/sitemap.xml`,
-    host: SITE_URL,
+    sitemap: `${baseUrl}/sitemap.xml`,
   };
 }
