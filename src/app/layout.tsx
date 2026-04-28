@@ -13,7 +13,7 @@ import { Toaster } from "@/components/ui/toaster";
 //   3. Pilih metode "Tag HTML" → copy kode meta tag
 //   4. Ganti XXXXXXXXXX dengan kode yang kamu dapat
 // ============================================
-const GOOGLE_SITE_VERIFICATION = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
+const GOOGLE_SITE_VERIFICATION = "Iv1JGS76QY_tVkVF1C9e2hXkMb4limM26W3DIfvvGsw";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
