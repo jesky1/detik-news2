@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Clock, ExternalLink } from 'lucide-react';
+import { Clock, ExternalLink, X } from 'lucide-react';
 import { useNewsStore } from '@/lib/news-store';
 import type { NewsArticle } from './types';
 import { categoryColors, categoryLabels } from './types';
@@ -24,7 +24,7 @@ function getTimeAgo(dateString: string): string {
 }
 
 export function NewsGrid() {
-  const { activeCategory } = useNewsStore();
+  const { activeCategory, searchQuery, setSearchQuery, setActiveCategory } = useNewsStore();
   const [articles, setArticles] = useState<NewsArticle[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -109,13 +109,52 @@ export function NewsGrid() {
     }
   }, []);
 
+  const fetchSearch = useCallback(async (query: string, showLoader = true) => {
+    if (showLoader) setLoading(true);
+    try {
+      const res = await fetch(`/api/news/search?q=${encodeURIComponent(query)}`);
+      if (res.ok) {
+        const data = await res.json();
+        setArticles(data.articles || []);
+      } else {
+        setArticles([]);
+      }
+    } catch {
+      setArticles([]);
+    } finally {
+      if (showLoader) setLoading(false);
+    }
+  }, []);
+
+  // Fetch data based on searchQuery or activeCategory
   useEffect(() => {
-    fetchNews(activeCategory);
-  }, [activeCategory, fetchNews]);
+    if (searchQuery && searchQuery.trim().length > 0) {
+      fetchSearch(searchQuery);
+    } else {
+      fetchNews(activeCategory);
+    }
+  }, [activeCategory, searchQuery, fetchNews, fetchSearch]);
 
   const handleRefresh = () => {
-    fetchNews(activeCategory, false);
+    if (searchQuery && searchQuery.trim().length > 0) {
+      fetchSearch(searchQuery, false);
+    } else {
+      fetchNews(activeCategory, false);
+    }
   };
+
+  const handleClearSearch = () => {
+    setSearchQuery('');
+  };
+
+  const isSearchMode = searchQuery && searchQuery.trim().length > 0;
+  const sectionTitle = isSearchMode
+    ? `Hasil pencarian: "${searchQuery}"`
+    : (categoryLabels[activeCategory] || 'Berita Terkini');
+
+  const sectionSubtitle = isSearchMode
+    ? `${articles.length} artikel ditemukan`
+    : 'Berita terbaru untuk Anda';
 
   if (loading) {
     return (
@@ -145,10 +184,19 @@ export function NewsGrid() {
     return (
       <section id="news-grid-section">
         <div className="mb-6">
-          <h2 className="text-xl font-bold text-gray-900">
-            {categoryLabels[activeCategory] || 'Berita Terkini'}
-          </h2>
-          <p className="text-sm text-gray-500 mt-1">Berita terbaru untuk Anda</p>
+          <div className="flex items-center gap-3">
+            <h2 className="text-xl font-bold text-gray-900">{sectionTitle}</h2>
+            {isSearchMode && (
+              <button
+                onClick={handleClearSearch}
+                className="flex items-center gap-1 text-xs text-gray-500 hover:text-[#e00000] transition-colors"
+              >
+                <X className="w-3 h-3" />
+                Hapus filter
+              </button>
+            )}
+          </div>
+          <p className="text-sm text-gray-500 mt-1">{sectionSubtitle}</p>
         </div>
         <div className="bg-white rounded-xl p-8 text-center shadow-sm border border-gray-100">
           <div className="text-gray-400 mb-3">
@@ -156,8 +204,12 @@ export function NewsGrid() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
             </svg>
           </div>
-          <p className="text-gray-600 font-medium">Tidak ada berita</p>
-          <p className="text-gray-400 text-sm mt-1">Belum ada artikel untuk kategori ini</p>
+          <p className="text-gray-600 font-medium">
+            {isSearchMode ? 'Tidak ditemukan' : 'Tidak ada berita'}
+          </p>
+          <p className="text-gray-400 text-sm mt-1">
+            {isSearchMode ? 'Coba gunakan kata kunci yang berbeda' : 'Belum ada artikel untuk kategori ini'}
+          </p>
           <button
             onClick={handleRefresh}
             className="mt-4 text-[#e00000] hover:text-red-700 text-sm font-medium transition-colors"
@@ -174,11 +226,23 @@ export function NewsGrid() {
       {/* Section Header */}
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h2 className="text-xl font-bold text-gray-900">
-            {categoryLabels[activeCategory] || 'Berita Terkini'}
-          </h2>
+          <div className="flex items-center gap-3">
+            <h2 className="text-xl font-bold text-gray-900">{sectionTitle}</h2>
+            {isSearchMode && (
+              <button
+                onClick={handleClearSearch}
+                className="flex items-center gap-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-[#e00000] px-2 py-1 rounded-full transition-colors"
+              >
+                <X className="w-3 h-3" />
+                Hapus filter
+              </button>
+            )}
+          </div>
           <p className="text-sm text-gray-500 mt-1">
-            {articles.length} artikel ditemukan
+            {isSearchMode
+              ? `${articles.length} artikel ditemukan`
+              : `${articles.length} artikel ditemukan`
+            }
           </p>
         </div>
         <button
@@ -214,7 +278,7 @@ export function NewsGrid() {
                   {categoryLabels[article.category] || article.category}
                 </Badge>
               </div>
-              {index === 0 && (
+              {index === 0 && !isSearchMode && (
                 <div className="absolute top-3 right-3">
                   <Badge className="bg-[#e00000] text-white border-0 text-[10px] animate-pulse">
                     TERBARU

@@ -2,26 +2,32 @@
 
 import { Facebook, Twitter, Instagram, Youtube } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
+import { useNewsStore } from '@/lib/news-store';
 
 const footerCategories = [
   {
     title: 'Berita',
+    category: 'berita',
     links: ['Nasional', 'Politik', 'Hukum & Kriminal', 'Peristiwa', 'Daerah'],
   },
   {
     title: 'Ekonomi',
+    category: 'ekonomi',
     links: ['Bisnis', 'Keuangan', 'Saham', 'Properti', 'Industri'],
   },
   {
     title: 'Hiburan',
+    category: 'hiburan',
     links: ['Selebriti', 'Film', 'Musik', 'Gosip', 'Lifestyle'],
   },
   {
     title: 'Olahraga',
+    category: 'olahraga',
     links: ['Sepak Bola', 'Badminton', 'MotoGP', 'F1', 'E-Sport'],
   },
   {
     title: 'Teknologi',
+    category: 'teknologi',
     links: ['Internet', 'Gadget', 'Software', 'Cyber Security', 'AI'],
   },
 ];
@@ -34,6 +40,35 @@ const socialLinks = [
 ];
 
 export function Footer() {
+  const { setActiveCategory, setSearchQuery, setSearchOpen } = useNewsStore();
+
+  const handleCategoryClick = (category: string) => {
+    setActiveCategory(category);
+    setSearchQuery('');
+    setSearchOpen(false);
+    // Scroll ke news grid
+    const newsSection = document.getElementById('news-grid-section');
+    if (newsSection) {
+      newsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    // Scroll ke atas halaman
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleSubcategoryClick = (subcategory: string, parentCategory: string) => {
+    setActiveCategory(parentCategory);
+    setSearchQuery(subcategory);
+    setSearchOpen(false);
+    // Scroll ke atas halaman lalu ke news grid
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setTimeout(() => {
+      const newsSection = document.getElementById('news-grid-section');
+      if (newsSection) {
+        newsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 300);
+  };
+
   return (
     <footer className="bg-[#0c0c0c] mt-auto">
       <div className="max-w-7xl mx-auto px-4 py-10">
@@ -69,16 +104,21 @@ export function Footer() {
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6 mb-8">
           {footerCategories.map((category) => (
             <div key={category.title}>
-              <h3 className="text-white font-semibold text-sm mb-3">{category.title}</h3>
+              <button
+                onClick={() => handleCategoryClick(category.category)}
+                className="text-white font-semibold text-sm mb-3 hover:text-[#e00000] transition-colors cursor-pointer"
+              >
+                {category.title}
+              </button>
               <ul className="space-y-2">
                 {category.links.map((link) => (
                   <li key={link}>
-                    <a
-                      href="#"
-                      className="text-gray-400 hover:text-white text-xs transition-colors"
+                    <button
+                      onClick={() => handleSubcategoryClick(link, category.category)}
+                      className="text-gray-400 hover:text-white text-xs transition-colors cursor-pointer"
                     >
                       {link}
-                    </a>
+                    </button>
                   </li>
                 ))}
               </ul>
