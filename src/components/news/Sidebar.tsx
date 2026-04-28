@@ -235,20 +235,20 @@ export function Sidebar() {
       </Tabs>
 
       {/* Info Box */}
-      <div className="bg-gradient-to-br from-red-50 to-orange-50 rounded-xl p-4 border border-red-100">
+      <div className="bg-gradient-to-br from-red-50 to-orange-50 rounded-xl p-3.5 border border-red-100">
         <div className="flex items-center gap-2 mb-2">
-          <div className="w-8 h-8 rounded-lg bg-[#e00000] flex items-center justify-center">
-            <span className="text-white text-xs font-bold">KN</span>
+          <div className="w-7 h-7 rounded-lg bg-[#e00000] flex items-center justify-center flex-shrink-0">
+            <span className="text-white text-[10px] font-bold">KN</span>
           </div>
-          <div>
-            <h4 className="font-bold text-sm text-gray-900">KonohaNews App</h4>
+          <div className="min-w-0">
+            <h4 className="font-bold text-xs text-gray-900">KonohaNews App</h4>
             <p className="text-[10px] text-gray-500">Berita terkini di genggaman Anda</p>
           </div>
         </div>
-        <p className="text-xs text-gray-600 mb-3 leading-relaxed">
+        <p className="text-[11px] text-gray-600 mb-2.5 leading-relaxed">
           Dapatkan notifikasi berita breaking dan topik trending langsung di smartphone Anda.
         </p>
-        <button className="w-full py-2 bg-[#e00000] hover:bg-red-700 text-white text-xs font-medium rounded-lg transition-colors">
+        <button className="w-full py-1.5 bg-[#e00000] hover:bg-red-700 text-white text-[11px] font-medium rounded-lg transition-colors">
           Download Sekarang
         </button>
       </div>
