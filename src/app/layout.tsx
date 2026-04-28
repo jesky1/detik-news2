@@ -1,7 +1,16 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
+
+// ============================================
+// GOOGLE ADSENSE CONFIGURATION
+// Ganti dengan Publisher ID kamu dari Google AdSense
+// Daftar: https://www.google.com/adsense/
+// Set juga di file .env.local: NEXT_PUBLIC_ADSENSE_ID=ca-pub-XXXXXXXXXXXXXXXX
+// ============================================
+const ADSENSE_ID = process.env.NEXT_PUBLIC_ADSENSE_ID || 'pub-6112263998203283';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -44,6 +53,15 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
       >
+        {/* Google AdSense Script - hanya load di production dengan ID valid */}
+        {ADSENSE_ID !== 'pub-6112263998203283' && (
+          <Script
+            async
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_ID}`}
+            crossOrigin="anonymous"
+            strategy="afterInteractive"
+          />
+        )}
         {children}
         <Toaster />
       </body>
