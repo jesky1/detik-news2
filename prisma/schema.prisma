@@ -29,7 +29,7 @@ model NewsArticle {
   id          String   @id @default(cuid())
   title       String
   summary     String?
-  sourceUrl   String
+  sourceUrl   String   @unique
   sourceName  String
   imageUrl    String?
   category    String
