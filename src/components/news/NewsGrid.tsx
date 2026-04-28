@@ -225,17 +225,12 @@ export function NewsGrid() {
 
             {/* Content */}
             <div className="p-4 flex flex-col flex-1">
-              <h3 className="font-bold text-gray-900 text-sm leading-snug group-hover:text-[#e00000] transition-colors line-clamp-2 mb-2">
+              <h3 className="font-bold text-gray-900 text-[13px] leading-snug group-hover:text-[#e00000] transition-colors line-clamp-2 mb-1.5 break-words">
                 {article.title}
               </h3>
-              <p className="text-gray-500 text-xs leading-relaxed line-clamp-2 mb-3 flex-1">
-                {article.summary}
-              </p>
-              <div className="flex items-center justify-between text-xs text-gray-400 pt-2 border-t border-gray-50">
-                <div className="flex items-center gap-1">
-                  <span className="font-medium text-gray-600">{article.sourceName}</span>
-                </div>
-                <div className="flex items-center gap-3">
+              <div className="flex items-center justify-between text-[11px] text-gray-400 pt-1.5 border-t border-gray-50">
+                <span className="font-medium text-gray-500 truncate mr-2">{article.sourceName}</span>
+                <div className="flex items-center gap-2 flex-shrink-0">
                   <span className="flex items-center gap-1">
                     <Clock className="w-3 h-3" />
                     {getTimeAgo(article.publishedAt)}
