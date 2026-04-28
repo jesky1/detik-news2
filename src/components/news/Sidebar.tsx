@@ -5,7 +5,6 @@ import { TrendingUp, Flame, MessageCircle, RefreshCw } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import type { TrendingTopic, NewsArticle } from './types';
 
 function getTimeAgo(dateString: string): string {
@@ -25,12 +24,13 @@ function getTimeAgo(dateString: string): string {
 
 function TrendingItem({ topic, index }: { topic: TrendingTopic; index: number }) {
   return (
-    <div className="flex items-start gap-3 py-3 border-b border-gray-100 last:border-0 group cursor-pointer hover:bg-gray-50/50 px-2 -mx-2 rounded-md transition-colors">
+    <div className="flex items-start gap-3 py-2.5 border-b border-gray-100 last:border-0 group cursor-pointer hover:bg-gray-50/50 px-2 -mx-2 rounded-md transition-colors">
       <span className="text-lg font-bold text-gray-300 w-6 text-center flex-shrink-0 mt-0.5">
         {index + 1}
       </span>
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-gray-800 group-hover:text-[#e00000] transition-colors line-clamp-2 leading-snug">
+        <p className="text-sm font-medium text-gray-800 group-hover:text-[#e00000] transition-colors leading-snug"
+           style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
           {topic.topic}
         </p>
       </div>
@@ -44,16 +44,17 @@ function PopularArticle({ article, index }: { article: NewsArticle; index: numbe
       href={article.sourceUrl}
       target="_blank"
       rel="noopener noreferrer"
-      className="flex items-start gap-3 py-3 border-b border-gray-100 last:border-0 group hover:bg-gray-50/50 px-2 -mx-2 rounded-md transition-colors"
+      className="flex items-start gap-3 py-2.5 border-b border-gray-100 last:border-0 group hover:bg-gray-50/50 px-2 -mx-2 rounded-md transition-colors"
     >
       <span className="text-lg font-bold text-gray-300 w-6 text-center flex-shrink-0 mt-0.5">
         {index + 1}
       </span>
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-gray-800 group-hover:text-[#e00000] transition-colors line-clamp-2 leading-snug">
+        <p className="text-sm font-medium text-gray-800 group-hover:text-[#e00000] transition-colors leading-snug"
+           style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
           {article.title}
         </p>
-        <div className="flex items-center gap-2 mt-1.5 text-xs text-gray-400">
+        <div className="flex items-center gap-2 mt-1 text-xs text-gray-400">
           <span>{article.sourceName}</span>
           <span>·</span>
           <span>{getTimeAgo(article.publishedAt)}</span>
@@ -71,21 +72,18 @@ export function Sidebar() {
   useEffect(() => {
     async function fetchSidebarData() {
       try {
-        // Fetch trending topics
         const trendingRes = await fetch('/api/news/trending');
         if (trendingRes.ok) {
           const trendingData = await trendingRes.json();
           setTrendingTopics(trendingData.topics || []);
         }
 
-        // Fetch popular articles (all categories, from news API)
         const popularRes = await fetch('/api/news?category=berita');
         if (popularRes.ok) {
           const popularData = await popularRes.json();
           setPopularArticles((popularData.articles || []).slice(0, 5));
         }
       } catch {
-        // Fallback data
         setTrendingTopics([
           { id: 't1', topic: 'Pemilu 2024: Hasil Rekapitulasi Suara', count: 95 },
           { id: 't2', topic: 'Timnas Indonesia di Piala Asia', count: 82 },
@@ -130,6 +128,26 @@ export function Sidebar() {
 
   return (
     <aside className="space-y-6">
+      {/* === INFO BOX di atas, supaya tidak ketimpa === */}
+      <div className="bg-gradient-to-br from-red-50 to-orange-50 rounded-xl p-4 border border-red-100 relative z-10">
+        <div className="flex items-center gap-2 mb-2">
+          <div className="w-8 h-8 rounded-lg bg-[#e00000] flex items-center justify-center">
+            <span className="text-white text-xs font-bold">DN</span>
+          </div>
+          <div>
+            <h4 className="font-bold text-sm text-gray-900">DetikNews App</h4>
+            <p className="text-[10px] text-gray-500">Berita terkini di genggaman Anda</p>
+          </div>
+        </div>
+        <p className="text-xs text-gray-600 mb-3 leading-relaxed">
+          Dapatkan notifikasi berita breaking dan topik trending langsung di smartphone Anda.
+        </p>
+        <button className="w-full py-2 bg-[#e00000] hover:bg-red-700 text-white text-xs font-medium rounded-lg transition-colors">
+          Download Sekarang
+        </button>
+      </div>
+
+      {/* === TABS: Trending / Terpopuler / Komentar === */}
       <Tabs defaultValue="trending" className="w-full">
         <TabsList className="w-full grid grid-cols-3 bg-white shadow-sm border border-gray-100 h-10">
           <TabsTrigger
@@ -155,7 +173,7 @@ export function Sidebar() {
           </TabsTrigger>
         </TabsList>
 
-        {/* Trending Topics */}
+        {/* Trending Topics - dengan max-height dan overflow scroll */}
         <TabsContent value="trending">
           <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
             <div className="flex items-center justify-between mb-3">
@@ -167,7 +185,8 @@ export function Sidebar() {
                 LIVE
               </Badge>
             </div>
-            <ScrollArea className="max-h-[400px]">
+            {/* FIX: pakai max-height + overflow-y: auto, bukan ScrollArea */}
+            <div className="max-h-[350px] overflow-y-auto" style={{ scrollbarWidth: 'thin' }}>
               {trendingTopics.length > 0 ? (
                 trendingTopics.map((topic, index) => (
                   <TrendingItem key={topic.id} topic={topic} index={index} />
@@ -177,7 +196,7 @@ export function Sidebar() {
                   <p>Belum ada topik trending</p>
                 </div>
               )}
-            </ScrollArea>
+            </div>
           </div>
         </TabsContent>
 
@@ -193,7 +212,7 @@ export function Sidebar() {
                 HOT
               </Badge>
             </div>
-            <ScrollArea className="max-h-[400px]">
+            <div className="max-h-[350px] overflow-y-auto" style={{ scrollbarWidth: 'thin' }}>
               {popularArticles.length > 0 ? (
                 popularArticles.map((article, index) => (
                   <PopularArticle key={article.id} article={article} index={index} />
@@ -203,7 +222,7 @@ export function Sidebar() {
                   <p>Belum ada artikel populer</p>
                 </div>
               )}
-            </ScrollArea>
+            </div>
           </div>
         </TabsContent>
 
@@ -219,7 +238,7 @@ export function Sidebar() {
                 BAHAS
               </Badge>
             </div>
-            <ScrollArea className="max-h-[400px]">
+            <div className="max-h-[350px] overflow-y-auto" style={{ scrollbarWidth: 'thin' }}>
               {popularArticles.length > 0 ? (
                 popularArticles.map((article, index) => (
                   <PopularArticle key={article.id} article={article} index={index} />
@@ -229,29 +248,10 @@ export function Sidebar() {
                   <p>Belum ada artikel dengan komentar</p>
                 </div>
               )}
-            </ScrollArea>
+            </div>
           </div>
         </TabsContent>
       </Tabs>
-
-      {/* Info Box */}
-      <div className="bg-gradient-to-br from-red-50 to-orange-50 rounded-xl p-3.5 border border-red-100">
-        <div className="flex items-center gap-2 mb-2">
-          <div className="w-7 h-7 rounded-lg bg-[#e00000] flex items-center justify-center flex-shrink-0">
-            <span className="text-white text-[10px] font-bold">KN</span>
-          </div>
-          <div className="min-w-0">
-            <h4 className="font-bold text-xs text-gray-900">KonohaNews App</h4>
-            <p className="text-[10px] text-gray-500">Berita terkini di genggaman Anda</p>
-          </div>
-        </div>
-        <p className="text-[11px] text-gray-600 mb-2.5 leading-relaxed">
-          Dapatkan notifikasi berita breaking dan topik trending langsung di smartphone Anda.
-        </p>
-        <button className="w-full py-1.5 bg-[#e00000] hover:bg-red-700 text-white text-[11px] font-medium rounded-lg transition-colors">
-          Download Sekarang
-        </button>
-      </div>
     </aside>
   );
 }
