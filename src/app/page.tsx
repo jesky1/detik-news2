@@ -2,7 +2,8 @@
 
 import { useEffect } from 'react';
 import { Header } from '@/components/news/Header';
-import { BreakingTicker, HeroSection } from '@/components/news/HeroSection';
+import { BreakingTicker } from '@/components/news/BreakingTicker';
+import { HeroSection } from '@/components/news/HeroSection';
 import { NewsGrid } from '@/components/news/NewsGrid';
 import { Sidebar } from '@/components/news/Sidebar';
 import { Footer } from '@/components/news/Footer';
