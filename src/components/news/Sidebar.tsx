@@ -217,7 +217,6 @@ export function Sidebar() {
         </TabsContent>
       </Tabs>
 
-
       {/* Info Box */}
       <div className="bg-gradient-to-br from-red-50 to-orange-50 rounded-xl p-3.5 border border-red-100">
         <div className="flex items-center gap-2 mb-2">
