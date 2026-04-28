@@ -1,6 +1,6 @@
 'use client';
 
-import { Facebook, Twitter, Instagram, Youtube, ChevronUp } from 'lucide-react';
+import { Facebook, Twitter, Instagram, Youtube, MessageCircle, Send } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { useNewsStore } from '@/lib/news-store';
 
@@ -33,10 +33,12 @@ const footerCategories = [
 ];
 
 const socialLinks = [
-  { icon: Facebook, label: 'Facebook', href: '#' },
-  { icon: Twitter, label: 'Twitter', href: '#' },
-  { icon: Instagram, label: 'Instagram', href: '#' },
-  { icon: Youtube, label: 'YouTube', href: '#' },
+  { icon: Facebook, label: 'Facebook', href: 'https://facebook.com/bang.nikko.96' },
+  { icon: Twitter, label: 'Twitter', href: 'https://twitter.com/jesky707' },
+  { icon: Instagram, label: 'Instagram', href: 'https://instagram.com/myrisca_real' },
+  { icon: Youtube, label: 'YouTube', href: 'https://youtube.com/@putrichikal4912' },
+  { icon: MessageCircle, label: 'WhatsApp', href: 'https://wa.me/6281234567890' },
+  { icon: Send, label: 'Telegram', href: 'https://t.me/mytania1' },
 ];
 
 export function Footer() {
@@ -71,7 +73,7 @@ export function Footer() {
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6 mb-8">
           <div>
             <h2 className="text-2xl font-extrabold mb-2">
-              <span className="text-white">DETIK</span>
+              <span className="text-white">KONOHA</span>
               <span className="text-[#e00000]">NEWS</span>
             </h2>
             <p className="text-gray-400 text-sm max-w-md leading-relaxed">
@@ -124,15 +126,18 @@ export function Footer() {
         <Separator className="bg-white/10 mb-6" />
 
         {/* Bottom Section */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-500">
-          <p>&copy; 2025 DetikNews. All rights reserved.</p>
-          <div className="flex items-center gap-4">
-            <a href="#" className="hover:text-white transition-colors">Tentang Kami</a>
-            <a href="#" className="hover:text-white transition-colors">Redaksi</a>
-            <a href="#" className="hover:text-white transition-colors">Karir</a>
-            <a href="#" className="hover:text-white transition-colors">Kontak</a>
-            <a href="#" className="hover:text-white transition-colors">Privasi</a>
-          </div>
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-400 border-t border-gray-700 pt-6 mt-10">
+          <p>
+  &copy; {new Date().getFullYear()} Warga Konoha. 
+  Portal Berita Indonesia Terpercaya
+</p>
+         <div className="flex flex-wrap items-center gap-4">
+          <a href="/tentang.html" className="hover:text-white transition-colors">Tentang Kami</a>
+          <a href="/redaksi.html" className="hover:text-white transition-colors">Redaksi</a>
+          <a href="/karir.html" className="hover:text-white transition-colors">Karir</a>
+          <a href="/kontak.html" className="hover:text-white transition-colors">Kontak</a>
+          <a href="/privasi.html" className="hover:text-white transition-colors">Privasi</a>
+         </div>
         </div>
       </div>
     </footer>
