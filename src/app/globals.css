@@ -144,3 +144,49 @@
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #9ca3af;
 }
+/* === FIX: Cegah teks overlap === */
+
+/* Batasi judul berita agar tidak keluar dari card */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Pastikan card berita tidak overflow */
+a.group {
+  overflow: hidden;
+}
+
+/* Fix: teks judul yang terlalu panjang */
+h2, h3 {
+  overflow-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+}
+
+/* Fix: ticker breaking news tidak overlap di mobile */
+@media (max-width: 640px) {
+  .animate-ticker {
+    animation: ticker 45s linear infinite;
+  }
+}
+
+/* Fix: prevent image from stretching text */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Fix: badge tidak overlap dengan teks */
+.badge-wrapper {
+  position: relative;
+}
