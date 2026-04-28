@@ -1,6 +1,6 @@
 'use client';
 
-import { Facebook, Twitter, Instagram, Youtube } from 'lucide-react';
+import { Facebook, Twitter, Instagram, Youtube, MessageCircle, Send } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 
 const footerCategories = [
@@ -27,10 +27,12 @@ const footerCategories = [
 ];
 
 const socialLinks = [
-  { icon: Facebook, label: 'Facebook', href: '#' },
-  { icon: Twitter, label: 'Twitter', href: '#' },
-  { icon: Instagram, label: 'Instagram', href: '#' },
-  { icon: Youtube, label: 'YouTube', href: '#' },
+  { icon: Facebook, label: 'Facebook', href: 'https://www.facebook.com/bang.nikko.96' },
+  { icon: Twitter, label: 'Twitter', href: 'https://twitter.com/jesky707' },
+  { icon: Instagram, label: 'Instagram', href: 'https://instagram.com/myrisca_real' },
+  { icon: Youtube, label: 'YouTube', href: 'https://youtube.com/@xyraa9808' },
+  { icon: MessageCircle, label: 'WhatsApp', href: 'https://wa.me/6281234567890' },
+  { icon: Send, label: 'Telegram', href: 'https://t.me/mytania1' },
 ];
 
 export function Footer() {
