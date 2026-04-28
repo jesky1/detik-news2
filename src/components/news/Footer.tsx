@@ -134,11 +134,11 @@ export function Footer() {
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-500">
           <p>&copy; 2025 Warga Konoha. All rights reserved.</p>
           <div className="flex items-center gap-4">
-            <a href="#" className="hover:text-white transition-colors">Tentang Kami</a>
-            <a href="#" className="hover:text-white transition-colors">Redaksi</a>
-            <a href="#" className="hover:text-white transition-colors">Karir</a>
-            <a href="#" className="hover:text-white transition-colors">Kontak</a>
-            <a href="#" className="hover:text-white transition-colors">Privasi</a>
+            <a href="/tentang.html">Tentang Kami</a>
+            <a href="/redaksi.html">Redaksi</a>
+            <a href="/karir.html">Karir</a>
+            <a href="/kontak.html">Kontak</a>
+            <a href="/privasi.html">Privasi</a>
           </div>
         </div>
       </div>
