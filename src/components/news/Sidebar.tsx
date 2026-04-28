@@ -221,10 +221,10 @@ export function Sidebar() {
       <div className="bg-gradient-to-br from-red-50 to-orange-50 rounded-xl p-3.5 border border-red-100">
         <div className="flex items-center gap-2 mb-2">
           <div className="w-7 h-7 rounded-lg bg-[#e00000] flex items-center justify-center flex-shrink-0">
-            <span className="text-white text-[10px] font-bold">DN</span>
+            <span className="text-white text-[10px] font-bold">WK</span>
           </div>
           <div className="min-w-0">
-            <h4 className="font-bold text-xs text-gray-900">DetikNews App</h4>
+            <h4 className="font-bold text-xs text-gray-900">Warga Konoha App</h4>
             <p className="text-[10px] text-gray-500">Berita terkini di genggaman Anda</p>
           </div>
         </div>
