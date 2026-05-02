@@ -21,6 +21,9 @@ export const metadata: Metadata = {
   description: "Portal berita terkini dan terpercaya dari Indonesia. Menyajikan berita nasional, ekonomi, hiburan, olahraga, teknologi, dan internasional.",
   keywords: ["berita", "news", "indonesia", "detik", "terkini", "portal berita", "berita hari ini", "berita terbaru"],
   authors: [{ name: "DetikNews" }],
+  verification: {
+    google: 'google82271afd81b42e09.html',
+  },
   icons: {
     icon: "https://z-cdn.chatglm.cn/z-ai/static/logo.svg",
   },
@@ -68,6 +71,7 @@ export default function RootLayout({
       >
         {children}
         <Toaster />
+        <script src="https://pl29322274.profitablecpmratenetwork.com/8b/38/fb/8b38fb8f148777ea9ae4d4c6bc484491.js"></script>
       </body>
     </html>
   );
